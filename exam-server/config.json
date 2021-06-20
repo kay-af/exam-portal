@@ -1,0 +1,10 @@
+{
+    "port": 4500,
+    "database": "mongodb://localhost:27017/examdb",
+    "accessTokenSecret": "3cf36f77fcbcb4de8a2c81555dc5fc13",
+    "adminTokenSecret": "1bfeeaca430635e556fc594359214f6a",
+    "defaultAdmin": {
+        "username": "admin",
+        "password": "1234"
+    }
+}
