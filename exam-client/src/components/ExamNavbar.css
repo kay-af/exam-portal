@@ -1,0 +1,21 @@
+.exam-nav-bar {
+    width: 100%;
+    padding: 8px;
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0px 1px 4px #2224;
+    align-items: center;
+}
+
+.nav-title {
+    font-size: large;
+    padding-right: 22px;
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nav-timer {
+    padding-right: 22px;
+    font-size: large;
+}

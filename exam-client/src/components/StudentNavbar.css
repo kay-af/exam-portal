@@ -1,0 +1,17 @@
+.nav-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px;
+    background-color: #222;
+    box-shadow: 1px 0px 4px gray;
+}
+
+.nav-header {
+    flex: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: medium;
+    font-weight: bold;
+    color: white;
+}

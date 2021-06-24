@@ -6,5 +6,6 @@
     "defaultAdmin": {
         "username": "admin",
         "password": "1234"
-    }
+    },
+    "clientOrigin": "http://localhost:3000"
 }

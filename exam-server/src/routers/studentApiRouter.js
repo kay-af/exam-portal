@@ -1,17 +1,11 @@
 import { Router } from 'express';
-import { StudentModel } from '../models/studentModel';
+import { studentApiController } from '../controllers/studentApiController';
 
 const studentApiRouter = Router();
 
-studentApiRouter.get('/info', (req, res) => {
-    const { userId } = req.auth;
-
-    StudentModel.findById(userId).then((doc) => {
-        return res.status(200).json(doc.toJSON());
-    }).catch((err) => {
-        console.log(err);
-        return res.sendStatus(500);
-    });
-});
+studentApiRouter.get('/info', studentApiController.info);
+studentApiRouter.get('/examList', studentApiController.examList);
+studentApiRouter.get('/exam', studentApiController.getQuestionPaper);
+studentApiRouter.post('/exam', studentApiController.postAnswers);
 
 export { studentApiRouter };

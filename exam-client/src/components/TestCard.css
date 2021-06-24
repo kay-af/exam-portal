@@ -1,0 +1,21 @@
+.card-desc {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.card-head-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.card-head-text {
+    flex: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: large;
+    color: black;
+}

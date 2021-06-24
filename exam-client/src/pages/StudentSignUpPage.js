@@ -1,54 +1,170 @@
-import React from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { Button, Card, Form } from 'semantic-ui-react'
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import SignUpCard from '../components/SignUpCard';
+import './CredentialPage.css';
+import axios from 'axios';
+import config from '../config.json';
+import useUnmountRequestCanceler from '../hooks/useUnmountRequestCanceler';
+
+const validateState = (state) => {
+    const fName = state.firstName.trim();
+    const lName = state.lastName.trim();
+    const email = state.email;
+    const password = state.password;
+
+    let errors = {
+        hasError: false
+    };
+
+    const nameLengthErrorMsg = "Must be 1-32 characters long!";
+    const invalidEmailMsg = "Please provide a valid email!";
+    const passwordLengthErrorMsg = "Must be 5-64 characters long!";
+
+    if (fName.length === 0 || fName.length > 32) {
+        errors.firstNameError = nameLengthErrorMsg;
+        errors.hasError = true;
+    }
+
+    if (lName.length === 0 || lName.length > 32) {
+        errors.lastNameError = nameLengthErrorMsg;
+        errors.hasError = true;
+    }
+
+    const reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    if (!reg.test(email)) {
+        errors.emailError = invalidEmailMsg;
+        errors.hasError = true;
+    }
+
+    if (password.length < 5 || password.length > 64) {
+        errors.passwordError = passwordLengthErrorMsg;
+        errors.hasError = true;
+    }
+
+    return errors;
+}
+
+const signUpStudent = (payload) => {
+    return axios.post(config.server + "/auth/student/create", payload);
+}
 
 function StudentSignUpPage() {
+    
+    useUnmountRequestCanceler();
 
-    const history = useHistory()
+    const history = useHistory();
+
+    const [signUpState, setSignUpState] = useState({
+        loading: false,
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        firstNameError: null,
+        lastNameError: null,
+        emailError: null,
+        passwordError: null
+    });
+
+    const callbacks = {
+        onLoginClicked: () => {
+            history.push('/signIn');
+        },
+        onChangeFirstName: (evt) => {
+            setSignUpState((prev) => {
+                return {
+                    ...prev,
+                    firstName: evt.target.value,
+                    firstNameError: null
+                }
+            })
+        },
+        onChangeLastName: (evt) => {
+            setSignUpState((prev) => {
+                return {
+                    ...prev,
+                    lastName: evt.target.value,
+                    lastNameError: null
+                }
+            })
+        },
+        onChangeEmail: (evt) => {
+            setSignUpState((prev) => {
+                return {
+                    ...prev,
+                    email: evt.target.value,
+                    emailError: null
+                }
+            })
+        },
+        onChangePassword: (evt) => {
+            setSignUpState((prev) => {
+                return {
+                    ...prev,
+                    password: evt.target.value,
+                    passwordError: null
+                }
+            })
+        },
+        onCreateAccountClicked: () => {
+            const errors = validateState(signUpState);
+
+            setSignUpState((prev) => {
+                return {
+                    ...prev,
+                    firstNameError: errors.firstNameError,
+                    lastNameError: errors.lastNameError,
+                    emailError: errors.emailError,
+                    passwordError: errors.passwordError
+                }
+            });
+
+            if (!errors.hasError) {
+                const payload = {
+                    firstName: signUpState.firstName.trim(),
+                    lastName: signUpState.lastName.trim(),
+                    email: signUpState.email,
+                    password: signUpState.password
+                };
+
+                setSignUpState((prev) => {
+                    return {
+                        ...prev,
+                        loading: true
+                    }
+                })
+                signUpStudent(payload).then((response) => {
+                    if (response.status === 201) {
+                        console.log("Created");
+                        history.push('/login');
+                        alert(config.messages.accountCreated);
+                    }
+                }).catch((err) => {
+                    setSignUpState((prev) => {
+                        return {
+                            ...prev,
+                            loading: false
+                        }
+                    });
+                    const status = err.response?.status;
+                    if (status === 400) {
+                        setSignUpState((prev) => {
+                            return {
+                                ...prev,
+                                emailError: "This email is already in use!"
+                            }
+                        })
+                    } else if (status === 500) {
+                        alert(config.messages.intervalServerError);
+                    }
+                });
+            }
+        }
+    }
 
     return (
-        <div style={{
-            height: "100%",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-        }}>
-            <Card>
-                <Card.Header>
-                    <h2 style={{
-                        width: "100%",
-                        padding: "12px",
-                        fontWeight: 100,
-                        textAlign: "center",
-                        textTransform: "uppercase"
-                    }}>Sign Up</h2>
-                </Card.Header>
-                <Card.Content>
-                    <Form>
-                        <Form.Field>
-                            <input placeholder="First Name" />
-                        </Form.Field>
-                        <Form.Field>
-                            <input placeholder="Last Name" />
-                        </Form.Field>
-                        <Form.Field>
-                            <input placeholder="Email" type="email"></input>
-                        </Form.Field>
-                        <Form.Field>
-                            <input placeholder="Password" type="password"></input>
-                        </Form.Field>
-                        <Button fluid color="blue">
-                            <Button.Content visible>Sign Up</Button.Content>
-                        </Button>
-                    </Form>
-                </Card.Content>
-                <Card.Content>
-                    <Button fluid onClick={() => history.push('/login')} color="violet" >
-                        <Button.Content visible>Have an account already?</Button.Content>
-                    </Button>
-                </Card.Content>
-            </Card>
+        <div className="credential-container">
+            <SignUpCard {...signUpState} {...callbacks} />
         </div>
     )
 }

@@ -1,0 +1,7 @@
+{
+    "server": "http://localhost:4500",
+    "messages": {
+        "intervalServerError": "An internal server error has occured!",
+        "accountCreated": "Account created!"
+    }
+}

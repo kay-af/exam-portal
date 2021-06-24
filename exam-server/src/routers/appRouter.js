@@ -4,10 +4,15 @@ import cors from 'cors';
 import { authRouter } from './authRouter';
 import { apiRouter } from './apiRouter';
 import cookieParser from 'cookie-parser';
+import config from '../../config.json';
 
 const appRouter = Router()
 
-appRouter.use(cors());
+appRouter.use(cors({
+    origin: config.clientOrigin,
+    credentials: true
+}));
+
 appRouter.use(bodyParser.json());
 appRouter.use(cookieParser());
 

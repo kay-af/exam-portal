@@ -24,7 +24,7 @@ const questionSchema = new mongoose.Schema({
     }
 });
 
-questionSchema.virtual('isMultiChoice').get(() => {
+questionSchema.virtual('isMultiple').get(function() {
     return this.answers.length > 1;
 });
 

@@ -1,49 +1,137 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import 'semantic-ui-react'
-import { Button, Card, Form  } from 'semantic-ui-react'
+import './CredentialPage.css';
+import SignInCard from '../components/SignInCard';
+import axios from 'axios';
+import config from '../config.json';
+import useUnmountRequestCanceler from '../hooks/useUnmountRequestCanceler';
 
-function StudentLoginPage() {
+const validateState = (state) => {
+    const email = state.email.trim();
+    const password = state.password;
 
-    const history = useHistory()
+    let errors = {
+        hasError: false
+    };
+
+    const fieldRequiredMessage = "This field is required!";
+
+    if (email.length === 0) {
+        errors.emailError = fieldRequiredMessage;
+        errors.hasError = true;
+    }
+
+    if (password.length === 0) {
+        errors.passwordError = fieldRequiredMessage;
+        errors.hasError = true;
+    }
+
+    return errors;
+}
+
+const signInStudent = (payload) => {
+    return axios.post(config.server + "/auth/student/login", payload, {
+        withCredentials: true
+    });
+}
+
+function StudentLoginPage(props) {
+
+    useUnmountRequestCanceler();
+
+    const history = useHistory();
+
+    const [signInState, setSignInState] = useState({
+        loading: false,
+        email: "",
+        password: "",
+        remeberMe: false,
+        emailError: null,
+        passwordError: null
+    });
+
+    const callbacks = {
+        onChangeEmail: (evt) => {
+            setSignInState((prev) => {
+                return {
+                    ...prev,
+                    email: evt.target.value,
+                    emailError: null,
+                }
+            });
+        },
+        onChangePassword: (evt) => {
+            setSignInState((prev) => {
+                return {
+                    ...prev,
+                    password: evt.target.value,
+                    passwordError: null,
+                }
+            })
+        },
+        onCreateAccountClicked: () => {
+            history.push('/signUp')
+        },
+        onLoginClicked: () => {
+            const errors = validateState(signInState);
+
+            setSignInState((prev) => {
+                return {
+                    ...prev,
+                    emailError: errors.emailError,
+                    passwordError: errors.passwordError
+                }
+            });
+
+            if (!errors.hasError) {
+                const payload = {
+                    email: signInState.email,
+                    password: signInState.password
+                }
+
+                setSignInState((prev) => {
+                    return {
+                        ...prev,
+                        loading: true
+                    }
+                })
+                signInStudent(payload).then((response) => {
+                    if (response.status === 200) {
+                        history.replace('/student');
+                    }
+                }).catch((err) => {
+                    setSignInState((prev) => {
+                        return {
+                            ...prev,
+                            loading: false
+                        }
+                    });
+                    const status = err.response?.status;
+                    if (status === 404) {
+                        setSignInState((prev) => {
+                            return {
+                                ...prev,
+                                emailError: "User not found!"
+                            }
+                        })
+                    } else if (status === 401) {
+                        setSignInState((prev) => {
+                            return {
+                                ...prev,
+                                passwordError: "Password incorrect"
+                            }
+                        })
+                    } else if(status === 500) {
+                        alert(config.messages.intervalServerError);
+                    }
+                });
+            }
+        }
+    }
 
     return (
-        <div style={{
-            height: "100%",
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}>
-            <Card>
-                <Card.Header>
-                    <h2 style={{
-                        width: "100%",
-                        padding: "12px",
-                        fontWeight: 100,
-                        textAlign: "center",
-                        textTransform: "uppercase"
-                    }}>Sign In</h2>
-                </Card.Header>
-                <Card.Content>
-                    <Form>
-                        <Form.Field>
-                            <input placeholder="Email" type="email"></input>
-                        </Form.Field>
-                        <Form.Field>
-                            <input placeholder="Password" type="password"></input>
-                        </Form.Field>
-                        <Button fluid color="blue">
-                            <Button.Content visible>Sign in</Button.Content>
-                        </Button>
-                    </Form>
-                </Card.Content>
-                <Card.Content>
-                    <Button fluid color="orange" onClick={() => history.push('/signUp')}>
-                        <Button.Content visible>Create account</Button.Content>
-                    </Button>
-                </Card.Content>
-            </Card>
+        <div className="credential-container">
+            <SignInCard {...signInState} { ...callbacks } />
         </div>
     )
 }

@@ -1,8 +1,6 @@
-import './App.css';
-import 'semantic-ui-css/semantic.min.css'
 import { useWindowSize } from 'react-use'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import AppRouter from './AppRouter';
+import AppRouter from './routers/AppRouter';
+import 'semantic-ui-css/semantic.min.css';
 
 function App() {
 
