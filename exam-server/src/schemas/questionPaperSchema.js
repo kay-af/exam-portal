@@ -18,6 +18,10 @@ const questionPaperSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.Number,
         default: 2 * 60 * 60
     },
+    deleted: {
+        type: mongoose.SchemaTypes.Number,
+        default: 0
+    }
 }, {
     timestamps: true,
 });

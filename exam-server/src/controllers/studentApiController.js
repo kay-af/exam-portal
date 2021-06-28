@@ -40,10 +40,13 @@ const processQuestionDoc = (doc) => {
     if (doc.shuffleable) questions = shuffle(questions);
 
     return {
+        id: doc._id,
         paperName: doc.paperName,
         time: doc.time,
         questions: questions,
-        timestamp: doc.updatedAt
+        numQuestions: questions.length,
+        timestamp: doc.createdAt,
+        maxScore: doc.maxScore
     }
 }
 
@@ -62,6 +65,7 @@ const compareAnswers = (ans, original) => {
 
 const assignScores = (questions, submission) => {
     let quesMap = new Map();
+    let attempted = 0;
     let score = 0;
 
     questions.forEach((q) => {
@@ -69,7 +73,10 @@ const assignScores = (questions, submission) => {
     });
 
     submission.forEach((sub) => {
-        if (quesMap.has(sub.id)) {
+        if (quesMap.has(sub.id) && sub.answers.length > 0) {
+
+            attempted++;
+
             const ques = quesMap.get(sub.id);
             const originalAns = ques.answers;
             const givenAns = sub.answers;
@@ -80,7 +87,10 @@ const assignScores = (questions, submission) => {
         }
     });
 
-    return score;
+    return {
+        score: score,
+        attempted: attempted
+    };
 }
 
 const studentApiController = {
@@ -98,6 +108,7 @@ const studentApiController = {
                     email: doc.email,
                     testHistory: docs.map((doc) => {
                         return {
+                            id: doc._id,
                             paperName: doc.paperName,
                             numQuestions: doc.numQuestions,
                             time: doc.time,
@@ -133,7 +144,8 @@ const studentApiController = {
             QuestionPaperModel.find({
                 _id: {
                     $nin: excludedTests
-                }
+                },
+                deleted: 0
             }, (err, availableTests) => {
                 if (err) {
                     console.log(err.message);
@@ -162,26 +174,58 @@ const studentApiController = {
             error: 'MISSING_EXAM_ID'
         });
 
-        QuestionPaperModel.findById(id).then((doc) => {
-            if (!doc) return res.status(404).json({
-                error: 'EXAM_NOT_FOUND'
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.sendStatus(400).json({
+                error: 'INVALID_EXAM_ID'
             });
+        }
 
-            res.status(200).json(processQuestionDoc(doc));
-        }).catch((err) => {
-            if (err.message.startsWith('Cast to ObjectId')) return res.status(404).json({
-                error: 'EXAM_NOT_FOUND'
+        TestHistoryModel.findOne({
+            questionPaper: id,
+            studentId: req.auth.userId
+        }, (err, doc) => {
+            if (err) {
+                console.log(err.message);
+                return res.sendStatus(500);
+            }
+
+            if (doc) {
+                return res.status(403).json({
+                    error: 'ALREADY_SUBMITTED'
+                });
+            }
+
+            QuestionPaperModel.findById(id).then((doc) => {
+                if (!doc) return res.status(404).json({
+                    error: 'EXAM_NOT_FOUND'
+                });
+
+                if(doc.deleted !== 0) {
+                    return res.status(404).json({
+                        error: 'EXAM_DELETED'
+                    });
+                }
+
+                res.status(200).json(processQuestionDoc(doc));
+            }).catch((err) => {
+                console.log(err.message);
+                return res.sendStatus(500);
             });
-            console.log(err.message);
-            return res.sendStatus(500);
         });
     },
     postAnswers: (req, res) => {
+
         const { id } = req.query;
 
         if (!id) return res.status(400).json({
             error: 'MISSING_EXAM_ID'
         });
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.sendStatus(400).json({
+                error: 'INVALID_EXAM_ID'
+            });
+        }
 
         const sub = req.body;
 
@@ -202,12 +246,20 @@ const studentApiController = {
 
             QuestionPaperModel.findById(id).then((doc) => {
 
-                if (!doc) return res.status(404).json({
-                    error: 'EXAM_NOT_FOUND'
-                });
+                if (!doc) {
+                    return res.status(404).json({
+                        error: 'EXAM_NOT_FOUND'
+                    });
+                }
+
+                if (doc.deleted !== 0) {
+                    return res.status(404).json({
+                        error: 'EXAM_DELETED'
+                    });
+                }
 
                 try {
-                    const score = assignScores(doc.questions, sub);
+                    const payload = assignScores(doc.questions, sub);
 
                     TestHistoryModel.create({
                         questionPaper: doc._id,
@@ -216,11 +268,9 @@ const studentApiController = {
                         numQuestions: doc.numQuestions,
                         time: doc.time,
                         maxScore: doc.maxScore,
-                        score: score
+                        score: payload.score,
                     }).then(() => {
-                        return res.status(200).json({
-                            score: score
-                        });
+                        return res.status(200).json(payload);
                     }).catch((err) => {
                         console.log(err.message);
                         return res.sendStatus(500);

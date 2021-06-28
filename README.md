@@ -1,12 +1,18 @@
-# exam-portal
-4th Year Design Lab Project
+# Online Examination Portal
 
-Instructions to run server:
+## NOTE
 
-navigate to exam-server folder and run the command
+*MongoDB* is required to run this project
 
-`yarn install`
+## STEPS FOR SERVER
 
-and then
+- Navigate to *exam-server* folder
+- Use the command `yarn install` ( or `npm install` if using *npm*) to add all the dependencies
+- Use the command `yarn run dev` (or `npm run dev` if using *npm*) to start the exam server in development mode (change the port and mongodb connection string in *config.json* if required)
 
-`yarn run dev`
+## STEPS FOR CLIENT
+
+- Navigate to *exam-client* folder
+- Use the command `yarn install` (or `npm install` if using *npm*) to add all the dependencies
+- Use the command `yarn run start` ( or `npm start` if using *npm*) to start the react development server
+- Wait for the client to open in the browser or navigate to http://localhost:3000/

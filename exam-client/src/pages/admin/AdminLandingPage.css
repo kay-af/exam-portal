@@ -1,0 +1,28 @@
+.admin-landing-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-landing-content {
+    width: 100%;
+    height: 0px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.admin-landing-side-bar {
+    width: 260px;
+    height: 100%;
+    background-color: #222;
+}
+
+.admin-landing-main-panel {
+    height: 100%;
+    width: 0px;
+    flex: 1;
+    padding: 16px;
+    overflow: auto;
+}

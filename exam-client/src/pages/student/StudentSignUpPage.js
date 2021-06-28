@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import SignUpCard from '../components/SignUpCard';
+import SignUpCard from '../../components/student/SignUpCard';
 import './CredentialPage.css';
 import axios from 'axios';
-import config from '../config.json';
-import useUnmountRequestCanceler from '../hooks/useUnmountRequestCanceler';
+import config from '../../config.json';
+import useUnmountRequestCanceler from '../../hooks/useUnmountRequestCanceler';
+import useISEResponseAlert from '../../hooks/useISEResponseAlert';
 
 const validateState = (state) => {
     const fName = state.firstName.trim();
@@ -51,6 +52,7 @@ const signUpStudent = (payload) => {
 function StudentSignUpPage() {
     
     useUnmountRequestCanceler();
+    useISEResponseAlert();
 
     const history = useHistory();
 
@@ -68,7 +70,7 @@ function StudentSignUpPage() {
 
     const callbacks = {
         onLoginClicked: () => {
-            history.push('/signIn');
+            history.push('/?q=signIn');
         },
         onChangeFirstName: (evt) => {
             setSignUpState((prev) => {
@@ -135,9 +137,11 @@ function StudentSignUpPage() {
                 })
                 signUpStudent(payload).then((response) => {
                     if (response.status === 201) {
-                        console.log("Created");
-                        history.push('/login');
                         alert(config.messages.accountCreated);
+                        history.push({
+                            pathname: "/",
+                            search: "?q=signIn"
+                        });
                     }
                 }).catch((err) => {
                     setSignUpState((prev) => {
@@ -154,8 +158,6 @@ function StudentSignUpPage() {
                                 emailError: "This email is already in use!"
                             }
                         })
-                    } else if (status === 500) {
-                        alert(config.messages.intervalServerError);
                     }
                 });
             }
@@ -164,6 +166,7 @@ function StudentSignUpPage() {
 
     return (
         <div className="credential-container">
+            <h1>Online Examination Portal</h1>
             <SignUpCard {...signUpState} {...callbacks} />
         </div>
     )

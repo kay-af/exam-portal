@@ -1,11 +1,11 @@
-.container {
+.student-landing-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.main-content {
+.student-landing-main-content {
     width: 100%;
     height: 0px;
     flex: 1;
@@ -13,13 +13,14 @@
     flex-direction: row;
 }
 
-.main-content .stats-div {
+.student-landing-stats-div {
     height: 100%;
     flex: 2;
+    width: 0px;
 }
 
-.main-content .tests-div {
-    flex: 1;
+.student-landing-tests-div {
+    width: 480px;
     height: 100%;
     background-color: whitesmoke;
     box-shadow: 1px 1px 2px #2224 inset;

@@ -4,9 +4,12 @@ function QuestionOveriewBadge(props) {
 
     let bg = props.current ? "violet" : props.attempted ? "green" : "#ddd";
     let txtCol = props.current || props.attempted ? "white" : "black"
+    if(props.attempted && props.current) {
+        bg = "purple"
+    }
 
     return (
-        <div onClick={() => props.onClick?.call(props.questionNum)} style={{
+        <div onClick={() => props.onClick(props.questionNum - 1)} style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

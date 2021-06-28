@@ -15,15 +15,15 @@ const constructTimeString = (seconds) => {
 }
 
 function ExamNavbar(props) {
-    const timeString = constructTimeString(props.remainingTime || 120*60)
+    const timeString = constructTimeString(props.remainingTime)
     return (
         <div className="exam-nav-bar">
-            <div className="nav-title"><b>Computer Science Exam II</b></div>
+            <div className="nav-title"><b>{props.paperName}</b></div>
             <div className="nav-timer">
                 <Icon name="clock outline"/>
                 <b>{timeString}</b>
             </div>
-            <Button color="brown" animated="vertical">
+            <Button onClick={props.onClickSubmit} color="brown" animated="vertical">
                 <Button.Content visible>
                     Submit Test
                 </Button.Content>

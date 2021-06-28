@@ -4,7 +4,6 @@ import './StudentNavbar.css';
 import { useHistory } from 'react-router-dom'
 import { useCookie } from 'react-use';
 
-
 function StudentNavbar() {
 
     const history = useHistory()

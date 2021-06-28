@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Dimmer, Loader, Modal, Segment } from 'semantic-ui-react'
+import { Button, Dimmer, Loader, Modal } from 'semantic-ui-react'
 
 const finalScoreString = (props) => {
     const scoreString = `${props.score}/${props.maxScore}`;
@@ -16,12 +16,10 @@ function ExamSubmitModal(props) {
                     Submitting your test... Don't refresh this page.
                 </Loader>
             </Dimmer>
-            <Modal open={props.open && !props.loading} size="mini" style={{ textAlign: "center" }}>
-                <Modal.Content>
-                    <Modal.Header>
-                        <h3>Your test has been submitted!</h3>
+            <Modal open={props.open && !props.loading} size="mini">
+                <Modal.Header>
+                    Your test has been submitted!
                     </Modal.Header>
-                </Modal.Content>
                 <Modal.Content>
                     <Modal.Description>
                         <p>You attempted <b>{props.attemptCount}/{props.numQuestions}</b> questions</p>
@@ -29,9 +27,9 @@ function ExamSubmitModal(props) {
                         <p><em>Your test history will be updated shortly. Proceed to dashboard!</em></p>
                     </Modal.Description>
                 </Modal.Content>
-                <Modal.Content>
-                    <Button onClick={props.onClickDashboard} primary fluid>Dashboard</Button>
-                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={props.onClickDashboard} primary>Dashboard</Button>
+                </Modal.Actions>
             </Modal>
         </>
     )

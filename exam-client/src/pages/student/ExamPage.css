@@ -1,11 +1,12 @@
-.container {
+.exam-page-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    user-select: none;
 }
 
-.main-section {
+.exam-page-main-section {
     width: 100%;
     flex: 1;
     height: 0px;
@@ -13,7 +14,7 @@
     flex-direction: row;
 }
 
-.question-section {
+.exam-page-question-section {
     flex: 1;
     width: 0px;
     height: 100%;
@@ -23,7 +24,7 @@
     flex-direction: column;
 }
 
-.overview-section {
+.exam-page-overview-section {
     padding: 16px;
     width: 300px;
     height: 100%;
@@ -33,30 +34,30 @@
     flex-direction: column;
 }
 
-.overview-section .content-container {
+.exam-page-badge-container {
     height: 0px;
     flex: 1;
     width: 100%;
     overflow-y: auto;
 }
 
-.overview-section .content-grid {
+.exam-page-badge-grid {
     padding: 8px;
     display: grid;
     gap: 8px;
     grid-template-columns: repeat(5, 1fr);
 }
 
-.question-num-title {
+.exam-page-question-num-title {
     font-size: x-large;
     font-weight: bold;
 }
 
-.question-num-title-total {
+.exam-page-question-num-title-total {
     font-size: larger;
 }
 
-.option-block {
+.exam-page-option-block {
     padding-top: 16px;
     width: 100%;
 }

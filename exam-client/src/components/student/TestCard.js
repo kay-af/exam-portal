@@ -3,6 +3,10 @@ import { Button, Card, Icon } from 'semantic-ui-react'
 import './TestCard.css';
 import interpolate from 'color-interpolate'
 
+const secondsToMinutes = (seconds) => {
+    return Math.floor(seconds / 60);
+}
+
 const cardBottom = (props) => {
     if (props.review) {
         const percent = (props.score / props.maxScore) * 100;
@@ -24,7 +28,7 @@ const cardBottom = (props) => {
     } else {
         return (
             <Card.Content>
-                <Button primary animated="vertical" floated="right">
+                <Button onClick={props.onStartTest} primary animated="vertical" floated="right">
                     <Button.Content visible>
                         Start Test
                     </Button.Content>
@@ -41,18 +45,18 @@ function TestCard(props) {
     return (
         <Card className={props.className} fluid raised>
             <Card.Content className="card-head-container">
-                <div className="card-head-text">{props.examName}</div>
+                <div className="card-head-text">{props.paperName}</div>
             </Card.Content>
             <Card.Content>
                 <Card.Description>
                     <div className="card-desc">
                         <div>
                             <Icon name="list" />
-                            <span>{props.numQuestions} Questions</span>
+                            <span>{props.numQuestions} Question(s)</span>
                         </div>
                         <div>
                             <Icon name="time" />
-                            <span>{props.time} minutes</span>
+                            <span>{secondsToMinutes(props.time)} minutes</span>
                         </div>
                         <div>
                             <Icon name="line graph" />

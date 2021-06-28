@@ -2,6 +2,7 @@
     "server": "http://localhost:4500",
     "messages": {
         "intervalServerError": "An internal server error has occured!",
-        "accountCreated": "Account created!"
+        "accountCreated": "Account created!",
+        "unauthorized": "Seems like you have been logged out! Login again!"
     }
 }

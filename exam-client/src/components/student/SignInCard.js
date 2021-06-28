@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Card, Form } from 'semantic-ui-react';
 
 function SignInCard(props) {
+
     return (
         <Card>
             <Card.Content>
@@ -16,6 +17,9 @@ function SignInCard(props) {
                     </Form.Field>
                     <Form.Field>
                         <Form.Input error={props.passwordError} onChange={props.onChangePassword} autoComplete="on" placeholder="Password" type="password" value={props.password}></Form.Input>
+                    </Form.Field>
+                    <Form.Field>
+                        <Form.Checkbox checked={props.rememberMe} onChange={(_, data) => props.onChangeRememberMe(data.checked)} label="Remember Me"></Form.Checkbox>
                     </Form.Field>
                     <Form.Field>
                         <Button color="blue" fluid onClick={props.onLoginClicked}>Login</Button>

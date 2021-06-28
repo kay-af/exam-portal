@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import './CredentialPage.css';
-import SignInCard from '../components/SignInCard';
+import SignInCard from '../../components/student/SignInCard';
 import axios from 'axios';
-import config from '../config.json';
-import useUnmountRequestCanceler from '../hooks/useUnmountRequestCanceler';
+import config from '../../config.json';
+import useUnmountRequestCanceler from '../../hooks/useUnmountRequestCanceler';
+import useISEResponseAlert from '../../hooks/useISEResponseAlert';
+import { useLocalStorage } from 'react-use';
+import { Button, Icon } from 'semantic-ui-react';
 
 const validateState = (state) => {
     const email = state.email.trim();
@@ -35,20 +38,29 @@ const signInStudent = (payload) => {
     });
 }
 
-function StudentLoginPage(props) {
+function StudentLoginPage() {
 
     useUnmountRequestCanceler();
+    useISEResponseAlert();
 
     const history = useHistory();
 
+    const [rememberMeProps, setRememberMeProps,] = useLocalStorage('rememberMeProps', {
+        check: false,
+        email: "",
+        password: ""
+    });
+
     const [signInState, setSignInState] = useState({
         loading: false,
-        email: "",
-        password: "",
+        email: rememberMeProps.email,
+        password: rememberMeProps.password,
         remeberMe: false,
         emailError: null,
         passwordError: null
     });
+
+    const [rememberMe, setRememberMe] = useState(rememberMeProps.check);
 
     const callbacks = {
         onChangeEmail: (evt) => {
@@ -70,7 +82,10 @@ function StudentLoginPage(props) {
             })
         },
         onCreateAccountClicked: () => {
-            history.push('/signUp')
+            history.push({
+                pathname: "/",
+                search: "?q=signUp"
+            });
         },
         onLoginClicked: () => {
             const errors = validateState(signInState);
@@ -97,6 +112,21 @@ function StudentLoginPage(props) {
                 })
                 signInStudent(payload).then((response) => {
                     if (response.status === 200) {
+
+                        if (rememberMe) {
+                            setRememberMeProps({
+                                check: true,
+                                email: signInState.email,
+                                password: signInState.password
+                            });
+                        } else {
+                            setRememberMeProps({
+                                check: false,
+                                email: "",
+                                password: ""
+                            });
+                        }
+
                         history.replace('/student');
                     }
                 }).catch((err) => {
@@ -106,6 +136,7 @@ function StudentLoginPage(props) {
                             loading: false
                         }
                     });
+
                     const status = err.response?.status;
                     if (status === 404) {
                         setSignInState((prev) => {
@@ -121,17 +152,32 @@ function StudentLoginPage(props) {
                                 passwordError: "Password incorrect"
                             }
                         })
-                    } else if(status === 500) {
-                        alert(config.messages.intervalServerError);
                     }
                 });
             }
+        },
+        onChangeRememberMe: (value) => {
+            setRememberMe(value);
         }
     }
 
     return (
         <div className="credential-container">
-            <SignInCard {...signInState} { ...callbacks } />
+            <h1>Online Examination Portal</h1>
+            <SignInCard rememberMe={rememberMe} {...signInState} {...callbacks} />
+            <Button disabled={signInState.loading} onClick={() => {
+                history.push({
+                    pathname: '/',
+                    search: '?q=signIn&admin=t'
+                })
+            }} animated="vertical">
+                <Button.Content visible>
+                    Are you an admin?
+                </Button.Content>
+                <Button.Content hidden>
+                    <Icon name="key" />
+                </Button.Content>
+            </Button>
         </div>
     )
 }

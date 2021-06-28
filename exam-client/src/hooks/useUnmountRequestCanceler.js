@@ -10,10 +10,10 @@ function useUnmountRequestCanceler() {
             config.cancelToken = cancelToken;
             return config;
         }
-        axios.interceptors.request.use(interceptor);
+        const id = axios.interceptors.request.use(interceptor);
         return () => {
             cancelers.forEach((cancel) => cancel());
-            axios.interceptors.request.eject(interceptor)
+            axios.interceptors.request.eject(id);
         }
     }, []);
 }
