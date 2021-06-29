@@ -1,32 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Statistic, Placeholder } from 'semantic-ui-react';
+import { Card, Statistic, Divider } from 'semantic-ui-react';
 import AdminDashboardResultCard from './AdminDashboardResultCard';
 import config from '../../config.json';
 import axios from 'axios';
-
-const getLoadingCard = () => {
-    return (
-        <Card raised fluid>
-            <Card.Content>
-                <Placeholder>
-                    <Placeholder.Header>
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                    </Placeholder.Header>
-                </Placeholder>
-            </Card.Content>
-            <Card.Content>
-                <Placeholder>
-                    <Placeholder.Paragraph>
-                        <Placeholder.Line length='medium' />
-                        <Placeholder.Line length='short' />
-                        <Placeholder.Line length='short' />
-                    </Placeholder.Paragraph>
-                </Placeholder>
-            </Card.Content>
-        </Card>
-    );
-}
+import LoadingCard from '../LoadingCard';
 
 function AdminDashboard() {
 
@@ -50,15 +27,13 @@ function AdminDashboard() {
     if (dashboardInfo.loading) {
         return (
             <>
-                {getLoadingCard()}
+                <LoadingCard />
                 <h1>Recent Tests</h1>
                 <Card.Group itemsPerRow="3" doubling>
-                    {getLoadingCard()}
-                    {getLoadingCard()}
-                    {getLoadingCard()}
-                    {getLoadingCard()}
-                    {getLoadingCard()}
-                    {getLoadingCard()}
+                    <LoadingCard />
+                    <LoadingCard />
+                    <LoadingCard />
+                    <LoadingCard />
                 </Card.Group>
             </>
         )
@@ -102,6 +77,7 @@ function AdminDashboard() {
                 </Card.Content>
             </Card>
             <h1>Recent Tests</h1>
+            <Divider />
             {dashboardInfo.testHistory.length === 0 ?
                 (<p>No one took any tests yet!</p>) :
                 (

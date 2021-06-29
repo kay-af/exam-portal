@@ -93,6 +93,13 @@ const adminApiController = {
             }
 
             QuestionPaperModel.findById(id).then((doc) => {
+
+                if(!doc) {
+                    return res.status(404).json({
+                        error: "EXAM_NOT_FOUND"
+                    });
+                }
+
                 if (doc.deleted === 2) {
                     return res.status(404).json({
                         error: 'EXAM_DELETED'
@@ -281,8 +288,8 @@ const adminApiController = {
                 testHistory: values[3].map((doc) => {
                     const d = processHighLevelTestHistoryDoc(doc)
                     const student = d.studentId;
-                    delete d.studentId;
                     d.student = {
+                        id: student._id,
                         name: student.name,
                         email: student.email
                     };

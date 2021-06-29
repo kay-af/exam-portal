@@ -1,0 +1,26 @@
+.admin-manage-question-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.admin-manage-question-content {
+    flex: 1;
+    height: 0px;
+    width: 100%;
+}
+
+.admin-manage-question-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+}
+
+.admin-manage-question-header .title {
+    flex: 1;
+    width: 0px;
+    white-space: nowrap;
+    margin-bottom: 0;
+}

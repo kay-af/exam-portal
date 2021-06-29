@@ -12,7 +12,7 @@ import ExamSubmitModal from '../../modals/ExamSubmitModal'
 import './ExamPage.css'
 import config from '../../config.json';
 import ExamNotFoundModal from '../../modals/ExamNotFoundModal'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Prompt } from 'react-router-dom'
 
 const initializeResponses = (questions) => {
     return questions.map((q) => {
@@ -48,6 +48,8 @@ function ExamPage(props) {
         responses: []
     });
 
+    const [submitted, setSubmitted] = useState(false);
+
     const examTimerId = useRef(null);
 
     useEffect(() => {
@@ -65,8 +67,6 @@ function ExamPage(props) {
                     responses: initializeResponses(response.data.questions),
                     currentQuestion: 0
                 });
-
-                console.log(response.data);
 
                 examTimerId.current = setInterval(() => {
                     setExamTimer((prev) => prev - 1);
@@ -120,6 +120,7 @@ function ExamPage(props) {
                     ...response.data,
                     show: true
                 });
+                setSubmitted(true);
             }
         }).catch((err) => {
             console.log(err.response);
@@ -146,8 +147,17 @@ function ExamPage(props) {
         }
     });
 
+    let showPrompt = true;
+    if (pageState.activeExam && submitted) {
+        showPrompt = false;
+    }
+    if (!pageState.activeExam) {
+        showPrompt = false;
+    }
+
     return (
         <>
+            <Prompt when={showPrompt} message="All unsaved changes will be lost! Are you sure you want to exit?" />
             <Dimmer active={fetchingPaper}>
                 <Loader>Loading Question Paper</Loader>
             </Dimmer>

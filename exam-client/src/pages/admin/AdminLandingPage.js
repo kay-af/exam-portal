@@ -9,6 +9,7 @@ import './AdminLandingPage.css';
 import { useHistory } from 'react-router-dom';
 import AdminChangeCredential from '../../components/admin/AdminChangeCredential';
 import AdminManageQuestion from '../../components/admin/AdminManageQuestion';
+import AdminManageStudent from '../../components/admin/AdminManageStudent';
 
 const getMenuItems = (props, history) => {
     const items = [
@@ -66,8 +67,9 @@ function AdminLandingPage(props) {
                 </div>
                 <div className="admin-landing-main-panel">
                     { props.page === 0 && <AdminDashboard /> }
-                    { props.page === 3 && <AdminChangeCredential />}
                     {props.page === 1 && <AdminManageQuestion />}
+                    {props.page === 2 && <AdminManageStudent />}
+                    { props.page === 3 && <AdminChangeCredential />}
                 </div>
             </div>
         </div>

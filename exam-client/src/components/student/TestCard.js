@@ -62,6 +62,10 @@ function TestCard(props) {
                             <Icon name="line graph" />
                             <span>Maximum Score: {props.maxScore}</span>
                         </div>
+                        <div>
+                            <Icon name="clock outline" />
+                            <span>{props.review ? "Test taken on: " : "Created on: "}<b>{new Date(props.timestamp).toLocaleString()}</b></span>
+                        </div>
                     </div>
                 </Card.Description>
             </Card.Content>

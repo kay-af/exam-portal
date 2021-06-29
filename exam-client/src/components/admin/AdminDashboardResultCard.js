@@ -1,12 +1,15 @@
 import React from 'react'
-import { Card } from 'semantic-ui-react';
+import { Button, Card } from 'semantic-ui-react';
 import interpolate from 'color-interpolate';
+import { useHistory } from 'react-router-dom';
 
 function AdminDashboardResultCard(props) {
 
     const percent = (props.score / props.maxScore) * 100;
     const lerp = interpolate(['red', 'purple', 'green']);
     const col = lerp(percent / 100);
+
+    const history = useHistory();
 
     return (
         <Card fluid>
@@ -35,6 +38,29 @@ function AdminDashboardResultCard(props) {
                 <div>
                     <span><b>Percentage: {percent.toFixed(2)}%</b></span>
                 </div>
+            </Card.Content>
+            <Card.Content>
+                <Button.Group fluid>
+                    <Button onClick={() => {
+                        history.push({
+                            pathname: "/admin/question",
+                            search: `?id=${props.examId}`
+                        })
+                    }}>
+                        Question Paper
+                    </Button>
+                    {
+                        !props.hideStudentDetailsBtn &&
+                        <Button onClick={() => {
+                            history.push({
+                                pathname: "/admin/student",
+                                search: `?id=${props.student.id}`
+                            })
+                        }} primary>
+                            Student Details
+                        </Button>
+                    }
+                </Button.Group>
             </Card.Content>
         </Card>
     )

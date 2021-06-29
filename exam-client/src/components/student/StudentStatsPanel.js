@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, Divider, Placeholder } from 'semantic-ui-react'
 import TestCard from './TestCard'
+import LoadingCard from '../LoadingCard'
 
 const getHeader = (props) => {
 
@@ -33,30 +34,6 @@ const getHeader = (props) => {
     )
 }
 
-const getLoadingCard = () => {
-    return (
-        <Card raised fluid>
-            <Card.Content>
-                <Placeholder>
-                    <Placeholder.Header>
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                    </Placeholder.Header>
-                </Placeholder>
-            </Card.Content>
-            <Card.Content>
-                <Placeholder>
-                    <Placeholder.Paragraph>
-                        <Placeholder.Line length='medium' />
-                        <Placeholder.Line length='short' />
-                        <Placeholder.Line length='short' />
-                    </Placeholder.Paragraph>
-                </Placeholder>
-            </Card.Content>
-        </Card>
-    );
-}
-
 const getCardGroupWrapper = (child) => {
     return (
         <Card.Group itemsPerRow="two" doubling>
@@ -70,10 +47,10 @@ const getTestHistory = (props) => {
     if (props.loading) {
         return getCardGroupWrapper(
             <>
-                {getLoadingCard()}
-                {getLoadingCard()}
-                {getLoadingCard()}
-                {getLoadingCard()}
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
             </>
         )
     }

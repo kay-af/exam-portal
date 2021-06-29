@@ -101,6 +101,8 @@ const studentApiController = {
 
             TestHistoryModel.find({
                 studentId: userId
+            }).sort({
+                createdAt: "descending"
             }).then((docs) => {
 
                 const payload = {
@@ -146,12 +148,9 @@ const studentApiController = {
                     $nin: excludedTests
                 },
                 deleted: 0
-            }, (err, availableTests) => {
-                if (err) {
-                    console.log(err.message);
-                    return res.sendStatus(500);
-                }
-
+            }).sort({
+                createdAt: "descending"
+            }).then((availableTests) => {
                 const payload = availableTests.map((doc) => {
                     return {
                         id: doc._id,
@@ -164,6 +163,9 @@ const studentApiController = {
                 });
 
                 return res.status(200).json(payload);
+            }).catch((err) => {
+                console.log(err.message);
+                return res.sendStatus(500);
             })
         });
     },
