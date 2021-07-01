@@ -4,7 +4,6 @@ import { StudentModel } from '../models/studentModel';
 import { AdminModel } from '../models/adminModel';
 import bcrypt from 'bcrypt';
 import { TestHistoryModel } from '../models/testHistoryModel';
-import { PortalInner } from '../../../exam-client/node_modules/semantic-ui-react';
 
 function processLowLevelQuestionDoc(doc) {
     return {
